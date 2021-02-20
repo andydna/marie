@@ -1,19 +1,49 @@
 #include "marie.h"
 
-void fetch(struct marie *m)
+/* instructions */
+
+static void load(struct marie *m)
+{
+    m->acc = m->mbr;
+}
+
+static void store(struct marie *m)
+{
+    m->memory[m->mar] = m->acc;
+}
+
+static void add(struct marie *m)
+{
+    m->acc += m->mbr;
+}
+
+static void subt(struct marie *m)
+{
+    m->acc -= m->mbr;
+}
+
+static void jump(struct marie *m)
+{
+    m->pc = m->mbr;
+}
+
+/* fetch decode execute cycle */
+
+static void fetch(struct marie *m)
 {
     m->mar = m->pc;
     m->ir = m->memory[m->mar];
     ++m->pc;
 }
 
-void decode(struct marie *m)
+static void decode(struct marie *m)
 {
-    m->opcode = (m->ir & 0xf000) >> 12;
-    m->mar = m->ir & 0xfff;
+    m->opcode = (m->ir & 0xf000) >> 12; // top 4 bits of 16
+    m->mar = m->ir & 0xfff; // bottom 12 bits of 16
 
     switch(m->opcode)
     {
+        // if (instruction requires operand) copy the contents of memory[mar] to mbr
         case LOAD:
         case STORE:
         case ADD:
@@ -24,37 +54,22 @@ void decode(struct marie *m)
         default:
             break;
     }
-    // if (instruction_requires_operand) copy the contents of memory[mar] to mbr
 }
 
-void execute(struct marie *m)
+static void execute(struct marie *m)
 {
-    ;
-}
-
-/* instructions */
-
-void load(struct marie *m)
-{
-    m->acc = m->mbr;
-}
-
-void store(struct marie *m)
-{
-    m->memory[m->mar] = m->acc;
-}
-
-void add(struct marie *m)
-{
-    m->acc += m->mbr;
-}
-
-void subt(struct marie *m)
-{
-    m->acc -= m->mbr;
-}
-
-void jump(struct marie *m)
-{
-    m->pc = m->mbr;
+    switch(m->opcode)
+    {
+        case LOAD:
+            load(m);
+            break;
+        case STORE:
+            store(m);
+            break;
+        case ADD:
+            add(m);
+            break;
+        default:
+            break;
+    }
 }

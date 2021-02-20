@@ -1,3 +1,6 @@
+#ifndef MARIE_H
+#define MARIE_H
+
 #include <stdint.h>
 
 #define WORDS 4000
@@ -18,20 +21,4 @@ struct marie {
     uint16_t memory[WORDS];
 };
 
-void fetch(struct marie *m);
-
-void decode(struct marie *m);
-
-void execute(struct marie *m);
-
-/* instructions */
-
-void load(struct marie *m);
-
-void store(struct marie *m);
-
-void add(struct marie *m);
-
-void subt(struct marie *m);
-
-void jump(struct marie *m);
+#endif /* MARIE_H */
