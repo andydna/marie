@@ -51,50 +51,50 @@ void test_decode_only_copies_12_bits(void)
     free(m);
 }
 
-void test_decoding_opcodes(void)
+void test_decoding_ops(void)
 {
     struct marie *m = calloc(1, sizeof(struct marie));
 
     m->ir = 0x1fff;
     decode(m);
-    assert(m->opcode == LOAD);
+    assert(m->op == LOAD);
 
     m->ir = 0x2fff;
     decode(m);
-    assert(m->opcode == STORE);
+    assert(m->op == STORE);
 
     m->ir = 0x3fff;
     decode(m);
-    assert(m->opcode == ADD);
+    assert(m->op == ADD);
 
     m->ir = 0x4fff;
     decode(m);
-    assert(m->opcode == SUBT);
+    assert(m->op == SUBT);
 
     m->ir = 0x5fff;
     decode(m);
-    assert(m->opcode == INPUT);
+    assert(m->op == INPUT);
 
     m->ir = 0x6fff;
     decode(m);
-    assert(m->opcode == OUTPUT);
+    assert(m->op == OUTPUT);
 
     m->ir = 0x7fff;
     decode(m);
-    assert(m->opcode == HALT);
+    assert(m->op == HALT);
 
     m->ir = 0x8fff;
     decode(m);
-    assert(m->opcode == SKIPCOND);
+    assert(m->op == SKIPCOND);
 
     m->ir = 0x9fff;
     decode(m);
-    assert(m->opcode == JUMP);
+    assert(m->op == JUMP);
 
     free(m);
 }
 
-void test_decoding_opcodes_that_dont_require_operands_doesnt_change_mbr()
+void test_decoding_ops_that_dont_require_operands_doesnt_change_mbr()
 {
     // input, output, halt, skipcond
     // mbr shouldn't change
@@ -122,7 +122,7 @@ void test_decoding_opcodes_that_dont_require_operands_doesnt_change_mbr()
     assert(m->mbr == 0x111);
 }
 
-void test_decoding_opcodes_that_require_operands_changes_mbr()
+void test_decoding_ops_that_require_operands_changes_mbr()
 {
     // load, store, add, subt, jump
     struct marie *m = calloc(1, sizeof m);
@@ -238,9 +238,9 @@ int main(void)
     /* decode */
 
     test_decode_only_copies_12_bits();
-    test_decoding_opcodes();
-    test_decoding_opcodes_that_dont_require_operands_doesnt_change_mbr();
-    test_decoding_opcodes_that_require_operands_changes_mbr();
+    test_decoding_ops();
+    test_decoding_ops_that_dont_require_operands_doesnt_change_mbr();
+    test_decoding_ops_that_require_operands_changes_mbr();
 
     /* instructions - calling directly */
 
@@ -257,5 +257,10 @@ int main(void)
     test_execute_calls_load();
     test_execute_calls_store();
     test_execute_calls_add();
-//    test_execute_calls_subt();
+    test_execute_calls_subt();
+    // test_execute_calls_input();
+    // test_execute_calls_output();
+    // test_execute_calls_halt();
+    // test_execute_calls_skipcond();
+    test_execute_calls_jump();
 }

@@ -8,7 +8,7 @@
 enum isa { BAD, LOAD, STORE, ADD, SUBT, INPUT, OUTPUT, HALT, SKIPCOND, JUMP };
 
 struct marie {
-    enum isa opcode; // last decoded opcode
+    enum isa op; // last decoded opcode
     // registers
     uint16_t acc;
     uint16_t ir;

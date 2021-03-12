@@ -2,27 +2,27 @@
 
 /* instructions */
 
-static void load(struct marie *m)
+static inline void load(struct marie *m)
 {
     m->acc = m->mbr;
 }
 
-static void store(struct marie *m)
+static inline void store(struct marie *m)
 {
     m->memory[m->mar] = m->acc;
 }
 
-static void add(struct marie *m)
+static inline void add(struct marie *m)
 {
     m->acc += m->mbr;
 }
 
-static void subt(struct marie *m)
+static inline void subt(struct marie *m)
 {
     m->acc -= m->mbr;
 }
 
-static void jump(struct marie *m)
+static inline void jump(struct marie *m)
 {
     m->pc = m->mbr;
 }
@@ -38,10 +38,10 @@ static void fetch(struct marie *m)
 
 static void decode(struct marie *m)
 {
-    m->opcode = (m->ir & 0xf000) >> 12; // top 4 bits of 16
+    m->op = (m->ir & 0xf000) >> 12; // top 4 bits of 16
     m->mar = m->ir & 0xfff; // bottom 12 bits of 16
 
-    switch(m->opcode)
+    switch(m->op)
     {
         // if (instruction requires operand) copy the contents of memory[mar] to mbr
         case LOAD:
@@ -58,7 +58,7 @@ static void decode(struct marie *m)
 
 static void execute(struct marie *m)
 {
-    switch(m->opcode)
+    switch(m->op)
     {
         case LOAD:
             load(m);
@@ -68,6 +68,12 @@ static void execute(struct marie *m)
             break;
         case ADD:
             add(m);
+            break;
+        case SUBT:
+            subt(m);
+            break;
+        case JUMP:
+            jump(m);
             break;
         default:
             break;
